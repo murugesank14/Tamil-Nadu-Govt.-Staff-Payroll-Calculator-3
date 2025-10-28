@@ -1,8 +1,9 @@
 
+
 import React from 'react';
 
 interface TimelineIconProps {
-  type: 'joining' | 'promotion' | 'grade' | 'retirement' | 'stagnation' | 'transfer' | 'revision' | 'default';
+  type: 'joining' | 'promotion' | 'grade' | 'retirement' | 'stagnation' | 'transfer' | 'revision' | 'test_pass' | 'default';
 }
 
 export const TimelineIcon: React.FC<TimelineIconProps> = ({ type }) => {
@@ -14,6 +15,7 @@ export const TimelineIcon: React.FC<TimelineIconProps> = ({ type }) => {
     transfer: { path: 'M14 5l7 7m0 0l-7 7m7-7H3', color: 'bg-purple-500'},
     retirement: { path: 'M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-16V4m0 12v1m0-8V8', color: 'bg-red-500' },
     revision: { path: 'M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L14.732 6.732z', color: 'bg-teal-500' },
+    test_pass: { path: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', color: 'bg-cyan-500' },
     default: { path: 'M8 7h.01M12 7h.01M16 7h.01M9 17h6M9 21h6', color: 'bg-gray-500' }
   };
 

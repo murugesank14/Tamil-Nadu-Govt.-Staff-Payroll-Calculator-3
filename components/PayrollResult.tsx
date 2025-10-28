@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { PayrollResult as PayrollResultType } from '../types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/Card';
@@ -38,13 +39,17 @@ const formatCurrencyForExport = (amount: number) => {
 
 
 const PayrollResult: React.FC<PayrollResultProps> = ({ result }) => {
-  const { employeeDetails, fixation6thPC, fixation7thPC, yearlyCalculations, appliedRevisions } = result;
+  const { employeeDetails, fixation4thPC, fixation5thPC, fixation6thPC, fixation7thPC, yearlyCalculations, appliedRevisions, incrementAnalysis } = result;
   const { t } = useLanguage();
   const [isDdoVerified, setIsDdoVerified] = useState(false);
   const [auditorRemarks, setAuditorRemarks] = useState('');
   
   const hasAppliedGO237 = yearlyCalculations.some(year => 
     year.periods.some(p => p.remarks.join(' ').includes('G.O.Ms.No.237/2013'))
+  );
+
+  const wasIncrementWithheld = yearlyCalculations.some(year => 
+    year.periods.some(p => p.remarks.join(' ').toLowerCase().includes('withheld'))
   );
 
     const addBilingualFooterToPdf = (doc: any) => {
@@ -81,15 +86,46 @@ const PayrollResult: React.FC<PayrollResultProps> = ({ result }) => {
 
         doc.setFont('times', 'normal');
         doc.setFontSize(12);
-        const introText = `As per the Tamil Nadu Revised Pay Rules, 2017 (G.O.Ms.No.303, Dated 11th October 2017), the pay for Thiru/Tmt. ${employeeDetails.employeeName}, ${employeeDetails.joiningPost}, is fixed as follows:`;
+        const introText = `As per the relevant Tamil Nadu Revised Pay Rules, the pay for Thiru/Tmt. ${employeeDetails.employeeName}, ${employeeDetails.joiningPost}, is fixed as follows:`;
         const splitIntro = doc.splitTextToSize(introText, 180);
         doc.text(splitIntro, 14, 25);
         
         let lastY = 45;
 
+        if (fixation4thPC) {
+             doc.setFont('times', 'bold');
+            doc.text('1. Fixation into 4th Pay Commission (w.e.f. 01.01.1986)', 14, lastY);
+            const body = [
+                ['Basic Pay as on 31.12.1985', formatCurrencyForExport(fixation4thPC.basicPay1986)],
+                ['Pay fixed in revised scale', formatCurrencyForExport(fixation4thPC.initialRevisedPay)],
+            ];
+             doc.autoTable({
+                startY: lastY + 4, body: body, theme: 'striped',
+                styles: { fontSize: 10, cellPadding: 2.5 },
+                columnStyles: { 0: { fontStyle: 'bold', cellWidth: 80 } }
+            });
+            lastY = (doc as any).lastAutoTable.finalY + 8;
+        }
+        
+        if (fixation5thPC) {
+             doc.setFont('times', 'bold');
+            doc.text('2. Fixation into 5th Pay Commission (w.e.f. 01.01.1996)', 14, lastY);
+            const body = [
+                ['Basic Pay as on 31.12.1995', formatCurrencyForExport(fixation5thPC.basicPay1995)],
+                ['Total existing emoluments', formatCurrencyForExport(fixation5thPC.totalPay)],
+                [{ content: 'Pay fixed in revised scale', styles: { fontStyle: 'bold' } }, { content: formatCurrencyForExport(fixation5thPC.initialRevisedPay), styles: { fontStyle: 'bold' } }],
+            ];
+             doc.autoTable({
+                startY: lastY + 4, body: body, theme: 'striped',
+                styles: { fontSize: 10, cellPadding: 2.5 },
+                columnStyles: { 0: { fontStyle: 'bold', cellWidth: 80 } }
+            });
+            lastY = (doc as any).lastAutoTable.finalY + 8;
+        }
+
         if (fixation6thPC) {
             doc.setFont('times', 'bold');
-            doc.text('1. Fixation into 6th Pay Commission (w.e.f. 01.01.2006)', 14, lastY);
+            doc.text('3. Fixation into 6th Pay Commission (w.e.f. 01.01.2006)', 14, lastY);
             const body = [
                 ['Basic Pay as on 31.12.2005', formatCurrencyForExport(fixation6thPC.basicPay2005)],
                 ['Pay after multiplication by Fitment Factor of 1.86', formatCurrencyForExport(fixation6thPC.multipliedPay)],
@@ -110,7 +146,7 @@ const PayrollResult: React.FC<PayrollResultProps> = ({ result }) => {
         if (fixation7thPC) {
             const startY = lastY + 12;
             doc.setFont('times', 'bold');
-            doc.text('2. Fixation into 7th Pay Commission (w.e.f. 01.01.2016)', 14, startY);
+            doc.text('4. Fixation into 7th Pay Commission (w.e.f. 01.01.2016)', 14, startY);
             const body = [
                 ['Basic Pay as on 31.12.2015', formatCurrencyForExport(fixation7thPC.oldBasicPay)],
                 ['Pay after multiplication by Fitment Factor of 2.57', formatCurrencyForExport(fixation7thPC.multipliedPay)],
@@ -174,9 +210,15 @@ const PayrollResult: React.FC<PayrollResultProps> = ({ result }) => {
 
         // Pay Fixations
         let lastTableY = (doc as any).lastAutoTable.finalY + 10;
-        if (fixation6thPC || fixation7thPC) {
+        if (fixation4thPC || fixation5thPC || fixation6thPC || fixation7thPC) {
             doc.text('Initial Pay Fixations', 14, lastTableY);
             const fixationBody = [];
+             if(fixation4thPC) {
+                fixationBody.push([`4th PC (01-01-1986)`, formatCurrencyForExport(fixation4thPC.basicPay1986), '-', '-', formatCurrencyForExport(fixation4thPC.initialRevisedPay)]);
+            }
+            if(fixation5thPC) {
+                fixationBody.push([`5th PC (01-01-1996)`, formatCurrencyForExport(fixation5thPC.basicPay1995), '-', formatCurrencyForExport(fixation5thPC.totalPay), formatCurrencyForExport(fixation5thPC.initialRevisedPay)]);
+            }
             if(fixation6thPC) {
                 fixationBody.push([`6th PC (01-01-2006)`, formatCurrencyForExport(fixation6thPC.basicPay2005), 'x 1.86', `${formatCurrencyForExport(fixation6thPC.initialPayInPayBand)} (PIPB)`, `${formatCurrencyForExport(fixation6thPC.initialRevisedBasicPay)}`]);
             }
@@ -410,6 +452,12 @@ const PayrollResult: React.FC<PayrollResultProps> = ({ result }) => {
 
       const fixationHeader = [ [], ['Pay Fixation Details'], ['Commission', 'Old Basic Pay', 'Factor', 'Intermediate Pay', 'New Basic Pay']];
       const fixationData = [];
+        if(fixation4thPC) {
+            fixationData.push([`4th PC (01-01-1986)`, fixation4thPC.basicPay1986, '-', '-', fixation4thPC.initialRevisedPay]);
+        }
+        if(fixation5thPC) {
+            fixationData.push([`5th PC (01-01-1996)`, fixation5thPC.basicPay1995, '-', fixation5thPC.totalPay, fixation5thPC.initialRevisedPay]);
+        }
        if(fixation6thPC) {
             fixationData.push([`6th PC (01-01-2006)`, fixation6thPC.basicPay2005, 'x 1.86', `${fixation6thPC.initialPayInPayBand} (PIPB)`, fixation6thPC.initialRevisedBasicPay]);
         }
@@ -462,11 +510,17 @@ const PayrollResult: React.FC<PayrollResultProps> = ({ result }) => {
         `).join('');
 
         let fixationHtml = '';
-        if (fixation6thPC || fixation7thPC) {
+        if (fixation4thPC || fixation5thPC || fixation6thPC || fixation7thPC) {
             fixationHtml += `<h2>Initial Pay Fixations</h2>
           <table>
             <thead><tr><th>Commission</th><th>Old Basic Pay</th><th>Factor</th><th>Intermediate Pay</th><th>New Basic Pay</th></tr></thead>
             <tbody>`;
+            if (fixation4thPC) {
+                 fixationHtml += `<tr><td>4th PC (01-01-1986)</td><td>${formatCurrencyForExport(fixation4thPC.basicPay1986)}</td><td>-</td><td>-</td><td>${formatCurrencyForExport(fixation4thPC.initialRevisedPay)}</td></tr>`;
+            }
+             if (fixation5thPC) {
+                 fixationHtml += `<tr><td>5th PC (01-01-1996)</td><td>${formatCurrencyForExport(fixation5thPC.basicPay1995)}</td><td>-</td><td>${formatCurrencyForExport(fixation5thPC.totalPay)}</td><td>${formatCurrencyForExport(fixation5thPC.initialRevisedPay)}</td></tr>`;
+            }
             if (fixation6thPC) {
                  fixationHtml += `<tr><td>6th PC (01-01-2006)</td><td>${formatCurrencyForExport(fixation6thPC.basicPay2005)}</td><td>x 1.86</td><td>${formatCurrencyForExport(fixation6thPC.initialPayInPayBand)} (PIPB)</td><td>${formatCurrencyForExport(fixation6thPC.initialRevisedBasicPay)}</td></tr>`;
             }
@@ -568,10 +622,6 @@ const PayrollResult: React.FC<PayrollResultProps> = ({ result }) => {
             <div><p className="text-gray-500">{t('calculatedRetirementDate')}</p><p className="font-semibold">{employeeDetails.retirementDate || 'N/A'}</p></div>
             {employeeDetails.selectionGradeDate && <div><p className="text-gray-500">{t('selectionGradeDate')}</p><p className="font-semibold">{employeeDetails.selectionGradeDate}</p></div>}
             {employeeDetails.specialGradeDate && <div><p className="text-gray-500">{t('specialGradeDate')}</p><p className="font-semibold">{employeeDetails.specialGradeDate}</p></div>}
-            {employeeDetails.superGradeDate && <div><p className="text-gray-500">{t('superGradeDate')}</p><p className="font-semibold">{employeeDetails.superGradeDate}</p></div>}
-            {employeeDetails.stagnationIncrementDates && employeeDetails.stagnationIncrementDates.length > 0 && 
-              <div className="col-span-full"><p className="text-gray-500">{t('stagnationIncrementDate')}</p><p className="font-semibold">{employeeDetails.stagnationIncrementDates.join(', ')}</p></div>
-            }
             {employeeDetails.promotions.map((promo, index) => (
                 <React.Fragment key={index}>
                     <div className="col-span-1">
@@ -584,8 +634,51 @@ const PayrollResult: React.FC<PayrollResultProps> = ({ result }) => {
                     </div>
                 </React.Fragment>
             ))}
+            {employeeDetails.accountTestPasses && employeeDetails.accountTestPasses.map((at, index) => (
+                 <div key={index} className="col-span-full">
+                    <p className="text-gray-500">{t('accountTestPass')} #{index+1}</p>
+                    <p className="font-semibold">{at.description} on {at.passDate}</p>
+                 </div>
+            ))}
         </CardContent>
       </Card>
+      
+      {wasIncrementWithheld && (
+        <Card className="bg-yellow-50 border-yellow-400">
+            <CardHeader>
+                <CardTitle className="text-yellow-800">{t('incrementAlert')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p className="text-sm text-yellow-700">{t('incrementWithheldMessage')}</p>
+            </CardContent>
+        </Card>
+      )}
+
+      <Card>
+        <CardHeader>
+            <CardTitle>{t('probationSummary')}</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div><p className="text-gray-500">{t('probationPeriod')}</p><p className="font-semibold">{employeeDetails.probationPeriod || 'N/A'}</p></div>
+            <div><p className="text-gray-500">{t('probationEndsOn')}</p><p className="font-semibold">{employeeDetails.probationEndsOn || 'N/A'}</p></div>
+            <div className="col-span-full"><p className="text-gray-500">{t('testRequirementDetails')}</p><p className="font-semibold">{employeeDetails.testDetails || 'N/A'}</p></div>
+        </CardContent>
+      </Card>
+       
+      {incrementAnalysis && (
+        <Card>
+            <CardHeader>
+                <CardTitle>{t('incrementAnalysisTitle')}</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                <div><p className="text-gray-500">{t('regularIncrements')}</p><p className="font-semibold text-xl">{incrementAnalysis.regular}</p></div>
+                <div><p className="text-gray-500">{t('promotionIncrements')}</p><p className="font-semibold text-xl">{incrementAnalysis.promotion}</p></div>
+                <div><p className="text-gray-500">{t('gradeIncrements')}</p><p className="font-semibold text-xl">{incrementAnalysis.selectionGrade + incrementAnalysis.specialGrade}</p></div>
+                <div><p className="text-gray-500">{t('accountTestIncrements')}</p><p className="font-semibold text-xl">{incrementAnalysis.accountTest}</p></div>
+                <div className="md:col-start-3"><p className="text-gray-500">{t('totalIncrements')}</p><p className="font-bold text-2xl text-emerald-600">{incrementAnalysis.total}</p></div>
+            </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>

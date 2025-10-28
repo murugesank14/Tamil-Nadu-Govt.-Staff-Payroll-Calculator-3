@@ -1,4 +1,5 @@
 
+
 export const translations = {
   en: {
     // App Header
@@ -12,16 +13,22 @@ export const translations = {
     // Form Section Titles
     personalDetails: "Personal Details / தனிப்பட்ட விவரங்கள்",
     payAtJoining: "Pay at Time of Joining / பணியில் சேரும்போது ஊதியம்",
-    payAtJoiningDescPre2006: "Pre 2006 (5th Pay Commission) / 2006க்கு முன் (5வது ஊதியக் குழு)",
+    payAtJoiningDesc3rdPC: "Pre 1986 (3rd Pay Commission) / 1986க்கு முன் (3வது ஊதியக் குழு)",
+    payAtJoiningDesc4thPC: "1986 - 1995 (4th Pay Commission) / 1986 - 1995 (4வது ஊதியக் குழு)",
+    payAtJoiningDesc5thPC: "1996 - 2005 (5th Pay Commission) / 1996 - 2005 (5வது ஊதியக் குழு)",
     payAtJoiningDesc6thPC: "2006 - 2015 (6th Pay Commission) / 2006 - 2015 (6வது ஊதியக் குழு)",
     payAtJoiningDesc7thPC: "Post 2016 (7th Pay Commission) / 2016க்குப் பின் (7வது ஊதியக் குழு)",
     careerEventsHRA: "Career Events & HRA / பணி நிகழ்வுகள் & வீட்டு வாடகைப்படி",
     careerEventsHRADesc: "Enter dates for grade awards, transfers, and HRA classification.",
+    probationDetails: "Probation & Increment Details / தகுதிகாண் பருவம் & ஊதிய உயர்வு விவரங்கள்",
+    probationDetailsDesc: "Configure probation period and test requirements for increment eligibility.",
     deductionsAndAllowances: "Deductions & Allowances / பிடித்தங்கள் & படிகள்",
     deductionsAndAllowancesDesc: "Enter monthly deduction and allowance amounts.",
     advancesLPC: "Advances & Payables for LPC / LPCக்கான முன்பணம் & செலுத்த வேண்டியவைகள்",
     advancesLPCDesc: "Enter outstanding balances as on the date of relief.",
     promotions: "Promotions / பதவி உயர்வுகள்",
+    accountTestPass: "Account Test Pass (For Increment) / கணக்குத் தேர்வு தேர்ச்சி (ஊதிய உயர்விற்கு)",
+    accountTestPassDesc: "No test passes added. This grants a one-time increment.",
     breaksInService: "Breaks in Service (LOP / EOL) / பணியிடை முறிவு (சம்பளமில்லா விடுப்பு)",
     calculationPeriod: "Calculation Period / கணக்கீட்டுக் காலம்",
 
@@ -42,6 +49,8 @@ export const translations = {
     calculatedRetirementDate: "Calculated Retirement Date / கணக்கிடப்பட்ட ஓய்வு தேதி",
     postAtJoining: "Post at Joining / சேரும்போது பதவி",
     customPostName: "Custom Post Name / தனிப்பயன் பதவி பெயர்",
+    payScale3rdPC: "Pay Scale (3rd PC) / ஊதிய விகிதம் (3வது ஊதியக் குழு)",
+    payScale4thPC: "Pay Scale (4th PC) / ஊதிய விகிதம் (4வது ஊதியக் குழு)",
     payScale5thPC: "Pay Scale (5th PC) / ஊதிய விகிதம் (5வது ஊதியக் குழு)",
     basicPayAtJoining: "Basic Pay at Joining / சேரும்போது அடிப்படை ஊதியம்",
     payScaleAsOf2005: "Pay Scale (as of 31-12-2005) / ஊதிய விகிதம் (31-12-2005 நிலவரப்படி)",
@@ -51,8 +60,6 @@ export const translations = {
     levelOfPay: "Level of Pay / ஊதிய நிலை",
     selectionGradeDate: "Selection Grade Date / தேர்வு நிலை தேதி",
     specialGradeDate: "Special Grade Date / சிறப்பு நிலை தேதி",
-    superGradeDate: "Super Grade (Bonus) Date / சூப்பர் கிரேடு (போனஸ்) தேதி",
-    stagnationIncrementDate: "Stagnation Increment Start Date / தேக்கநிலை ஊதிய உயர்வு தொடக்க தேதி",
     dateOfRelief: "Date of Relief (Transfer) / விடுவிப்பு தேதி (இடமாற்றம்)",
     cityClassHRA: "City Class for HRA/CCA",
     cityClassA: "Class A (Chennai)",
@@ -78,11 +85,24 @@ export const translations = {
     calculateFrom: "Calculate From / இதிலிருந்து கணக்கிடுக",
     calculateTo: "Calculate To / இதுவரை கணக்கிடுக",
     applyFixationBenefit: "Apply SG/SpG Fixation Benefit",
-    
+    probationPeriod: "Probation Period / தகுதிகாண் பருவம்",
+    probation1Year: "1 Year",
+    probation2Years: "2 Years",
+    probationCustom: "Custom",
+    probationPeriodMonths: "Probation Period (in Months)",
+    probationStartDate: "Probation Start Date",
+    requiresTest: "Requires departmental test/qualification during probation",
+    testType: "Test Type",
+    testName: "Test Name / Description",
+    testStatus: "Test Status",
+    testPassedDate: "Test Passed Date",
+    passDate: "Pass Date / தேர்ச்சி தேதி",
+    testDescription: "Test Description / தேர்வு விளக்கம்",
+
+
     // Form Placeholders & Help Text
     enterFullName: "Enter full name / முழு பெயரை உள்ளிடவும்",
     enterFatherName: "Enter father's name / தந்தை பெயரை உள்ளிடவும்",
-    stagnationHelpText: "Date entered post at Level 24+. / நிலை 24+ பதவியில் நுழைந்த தேதி.",
     reliefHelpText: "Calculation will end on this date. / இந்த தேதியில் கணக்கீடு முடிவடையும்.",
     daOverrideHelpText: "For new G.O.s. Leave blank for auto-calculation.",
     incrementEligibilityHelpText: "Months of service required in a year to be eligible for the annual increment (default is 6).",
@@ -91,6 +111,7 @@ export const translations = {
     selectDatePrompt: "Please select a Date of Joining to enter pay details.",
     typeOrSelectPost: "Type or select a post",
     applyFixationBenefitTooltip: "Applies scale movement (pre-2006), double increment (2006-15), or two-cell increment (post-2016) as per relevant G.O.s.",
+    testNamePlaceholder: "e.g., Account Test Part 1",
 
 
     // Form Buttons
@@ -126,7 +147,17 @@ export const translations = {
     go237Title: "Note on G.O.Ms.No.237",
     go237Message: "The double increment benefit for Selection/Special Grade under G.O.Ms.No.237, dated 22.07.2013, takes notional effect from 01.01.2006 with monetary benefit from 01.04.2013. This calculation reflects the correct pay from the date of monetary benefit onwards.",
     bilingualFooter: "Calculation based on Finance (Pay Cell) Dept G.O.s 114/2014, 237/2013, & 7th Pay Commission Rules. | இக்கணக்கீடு நிதித்துறை (ஊதியச் செல்கள்) அ.ஆ. 114/2014, 237/2013, & 7வது ஊதியக்குழு விதிகள் அடிப்படையில் செய்யப்பட்டுள்ளது.",
-
+    probationSummary: "Probation Summary",
+    probationEndsOn: "Probation Ends On",
+    testRequirementDetails: "Test Requirement Details",
+    incrementAlert: "Increment Alert",
+    incrementWithheldMessage: "One or more annual increments were withheld during the calculation period due to probation rules. Please check the detailed breakdown for remarks.",
+    incrementAnalysisTitle: "Increment Analysis",
+    regularIncrements: "Regular Increments",
+    promotionIncrements: "Promotion Increments",
+    gradeIncrements: "Grade-based Increments",
+    accountTestIncrements: "Account Test Increments",
+    totalIncrements: "Total Increments",
 
     // Result Table
     payrollForYear: "Payroll for {year} / {year}க்கான ஊதியம்",
@@ -162,16 +193,22 @@ export const translations = {
     // Form Section Titles
     personalDetails: "தனிப்பட்ட விவரங்கள் / Personal Details",
     payAtJoining: "பணியில் சேரும்போது ஊதியம் / Pay at Time of Joining",
-    payAtJoiningDescPre2006: "2006க்கு முன் (5வது ஊதியக் குழு) / Pre 2006 (5th Pay Commission)",
+    payAtJoiningDesc3rdPC: "1986க்கு முன் (3வது ஊதியக் குழு) / Pre 1986 (3rd Pay Commission)",
+    payAtJoiningDesc4thPC: "1986 - 1995 (4வது ஊதியக் குழு) / 1986 - 1995 (4th Pay Commission)",
+    payAtJoiningDesc5thPC: "1996 - 2005 (5வது ஊதியக் குழு) / 1996 - 2005 (5th Pay Commission)",
     payAtJoiningDesc6thPC: "2006 - 2015 (6வது ஊதியக் குழு) / 2006 - 2015 (6th Pay Commission)",
     payAtJoiningDesc7thPC: "2016க்குப் பின் (7வது ஊதியக் குழு) / Post 2016 (7th Pay Commission)",
     careerEventsHRA: "பணி நிகழ்வுகள் & வீட்டு வாடகைப்படி / Career Events & HRA",
     careerEventsHRADesc: "தர உயர்வு, இடமாற்றம் மற்றும் வீட்டு வாடகைப்படி வகைப்பாட்டிற்கான தேதிகளை உள்ளிடவும்.",
+    probationDetails: "தகுதிகாண் பருவம் & ஊதிய உயர்வு விவரங்கள் / Probation & Increment Details",
+    probationDetailsDesc: "ஊதிய உயர்வு தகுதிக்காக தகுதிகாண் பருவம் மற்றும் தேர்வு தேவைகளை உள்ளிடவும்.",
     deductionsAndAllowances: "பிடித்தங்கள் & படிகள் / Deductions & Allowances",
     deductionsAndAllowancesDesc: "மாதாந்திர பிடித்தம் மற்றும் படிகளின் தொகையை உள்ளிடவும்.",
     advancesLPC: "LPCக்கான முன்பணம் & செலுத்த வேண்டியவைகள் / Advances & Payables for LPC",
     advancesLPCDesc: "விடுவிப்பு தேதியில் நிலுவையில் உள்ள மீதத்தொகையை உள்ளிடவும்.",
     promotions: "பதவி உயர்வுகள் / Promotions",
+    accountTestPass: "கணக்குத் தேர்வு தேர்ச்சி (ஊதிய உயர்விற்கு) / Account Test Pass (For Increment)",
+    accountTestPassDesc: "தேர்வு தேர்ச்சி எதுவும் சேர்க்கப்படவில்லை. இது ஒரு முறை ஊதிய உயர்வை வழங்கும்.",
     breaksInService: "பணியிடை முறிவு (சம்பளமில்லா விடுப்பு) / Breaks in Service (LOP / EOL)",
     calculationPeriod: "கணக்கீட்டுக் காலம் / Calculation Period",
 
@@ -192,6 +229,8 @@ export const translations = {
     calculatedRetirementDate: "கணக்கிடப்பட்ட ஓய்வு தேதி / Calculated Retirement Date",
     postAtJoining: "சேரும்போது பதவி / Post at Joining",
     customPostName: "தனிப்பயன் பதவி பெயர் / Custom Post Name",
+    payScale3rdPC: "ஊதிய விகிதம் (3வது ஊதியக் குழு) / Pay Scale (3rd PC)",
+    payScale4thPC: "ஊதிய விகிதம் (4வது ஊதியக் குழு) / Pay Scale (4th PC)",
     payScale5thPC: "ஊதிய விகிதம் (5வது ஊதியக் குழு) / Pay Scale (5th PC)",
     basicPayAtJoining: "சேரும்போது அடிப்படை ஊதியம் / Basic Pay at Joining",
     payScaleAsOf2005: "ஊதிய விகிதம் (31-12-2005 நிலவரப்படி) / Pay Scale (as of 31-12-2005)",
@@ -201,8 +240,6 @@ export const translations = {
     levelOfPay: "ஊதிய நிலை / Level of Pay",
     selectionGradeDate: "தேர்வு நிலை தேதி / Selection Grade Date",
     specialGradeDate: "சிறப்பு நிலை தேதி / Special Grade Date",
-    superGradeDate: "சூப்பர் கிரேடு (போனஸ்) தேதி / Super Grade (Bonus) Date",
-    stagnationIncrementDate: "தேக்கநிலை ஊதிய உயர்வு தொடக்க தேதி / Stagnation Increment Start Date",
     dateOfRelief: "விடுவிப்பு தேதி (இடமாற்றம்) / Date of Relief (Transfer)",
     cityClassHRA: "HRA/CCAக்கான நகர வகுப்பு",
     cityClassA: "வகுப்பு A (சென்னை)",
@@ -228,11 +265,23 @@ export const translations = {
     calculateFrom: "இதிலிருந்து கணக்கிடுக / Calculate From",
     calculateTo: "இதுவரை கணக்கிடுக / Calculate To",
     applyFixationBenefit: "தேர்வு/சிறப்பு நிலை நிர்ணயப் பலனைப் பயன்படுத்துக",
+    probationPeriod: "தகுதிகாண் பருவம் / Probation Period",
+    probation1Year: "1 ஆண்டு",
+    probation2Years: "2 ஆண்டுகள்",
+    probationCustom: "தனிப்பயன்",
+    probationPeriodMonths: "தகுதிகாண் பருவம் (மாதங்களில்)",
+    probationStartDate: "தகுதிகாண் தொடக்க தேதி",
+    requiresTest: "தகுதிகாண் பருவத்தில் துறைத் தேர்வு/தகுதி தேவை",
+    testType: "தேர்வு வகை",
+    testName: "தேர்வு பெயர் / விளக்கம்",
+    testStatus: "தேர்வு நிலை",
+    testPassedDate: "தேர்வில் தேர்ச்சி பெற்ற தேதி",
+    passDate: "தேர்ச்சி தேதி / Pass Date",
+    testDescription: "தேர்வு விளக்கம் / Test Description",
 
     // Form Placeholders & Help Text
     enterFullName: "முழு பெயரை உள்ளிடவும் / Enter full name",
     enterFatherName: "தந்தை பெயரை உள்ளிடவும் / Enter father's name",
-    stagnationHelpText: "நிலை 24+ பதவியில் நுழைந்த தேதி. / Date entered post at Level 24+.",
     reliefHelpText: "இந்த தேதியில் கணக்கீடு முடிவடையும். / Calculation will end on this date.",
     daOverrideHelpText: "புதிய அரசாணைகளுக்கு. தானியங்கி கணக்கீட்டிற்கு காலியாக விடவும்.",
     incrementEligibilityHelpText: "ஆண்டு ஊதிய உயர்வு பெற ஒரு வருடத்தில் தேவைப்படும் சேவை மாதங்கள் (இயல்பாக 6).",
@@ -241,6 +290,7 @@ export const translations = {
     selectDatePrompt: "ஊதிய விவரங்களை உள்ளிட, பணியில் சேரும் தேதியைத் தேர்ந்தெடுக்கவும்.",
     typeOrSelectPost: "ஒரு பதவியைத் தட்டச்சு செய்யவும் அல்லது தேர்ந்தெடுக்கவும்",
     applyFixationBenefitTooltip: "தொடர்புடைய அரசாணைகளின்படி, தகுந்த பலனை (ஊதிய விகித மாற்றம் (2006க்கு முன்), இரட்டை ஊதிய உயர்வு (2006-15), அல்லது இரண்டு செல் ஊதிய உயர்வு (2016க்குப் பின்)) செயல்படுத்துகிறது.",
+    testNamePlaceholder: "உதா: கணக்கு தேர்வு பகுதி 1",
 
 
     // Form Buttons
@@ -276,7 +326,17 @@ export const translations = {
     go237Title: "அரசாணை எண் 237 குறித்த குறிப்பு",
     go237Message: "அரசாணை எண் 237, நாள் 22.07.2013-இன் படி தேர்வு/சிறப்பு நிலைக்கான இரட்டை ஊதிய உயர்வுப் பலன், 01.01.2006 முதல் கருத்தியலாகவும், 01.04.2013 முதல் பணப் பலனுடனும் அமலுக்கு வருகிறது. இந்தக் கணக்கீடு பணப் பலன் தேதியிலிருந்து சரியான ஊதியத்தைக் காட்டுகிறது.",
     bilingualFooter: "இக்கணக்கீடு நிதித்துறை (ஊதியச் செல்கள்) அ.ஆ. 114/2014, 237/2013, & 7வது ஊதியக்குழு விதிகள் அடிப்படையில் செய்யப்பட்டுள்ளது. | Calculation based on Finance (Pay Cell) Dept G.O.s 114/2014, 237/2013, & 7th Pay Commission Rules.",
-
+    probationSummary: "தகுதிகாண் சுருக்கம்",
+    probationEndsOn: "தகுதிகாண் முடியும் நாள்",
+    testRequirementDetails: "தேர்வுத் தேவை விவரங்கள்",
+    incrementAlert: "ஊதிய உயர்வு எச்சரிக்கை",
+    incrementWithheldMessage: "தகுதிகாண் விதிகள் காரணமாக கணக்கீட்டுக் காலத்தில் ஒன்று அல்லது அதற்கு மேற்பட்ட ஆண்டு ஊதிய உயர்வுகள் நிறுத்தி வைக்கப்பட்டுள்ளன. விரிவான தகவல்களுக்கு குறிப்புகளைப் பார்க்கவும்.",
+    incrementAnalysisTitle: "ஊதிய உயர்வு பகுப்பாய்வு",
+    regularIncrements: "வழக்கமான ஊதிய உயர்வுகள்",
+    promotionIncrements: "பதவி உயர்வு ஊதிய உயர்வுகள்",
+    gradeIncrements: "தர அடிப்படையிலான ஊதிய உயர்வுகள்",
+    accountTestIncrements: "கணக்குத் தேர்வு ஊதிய உயர்வுகள்",
+    totalIncrements: "மொத்த ஊதிய உயர்வுகள்",
 
     // Result Table
     payrollForYear: "{year}க்கான ஊதியம் / Payroll for {year}",
@@ -284,22 +344,20 @@ export const translations = {
     annualNetPay: "ஆண்டு நிகர ஊதியம்",
     period: "காலம் / Period",
     basicPay: "அடிப்படை ஊதியம் / Basic Pay",
-    da: "அ.ப / DA",
-    hra: "வீ.வா.ப / HRA",
+    da: "அகவிலைப்படி / DA",
+    hra: "வீட்டு வாடகைப்படி / HRA",
     cca: "CCA",
     medical: "மருத்துவப்படி",
     grossPay: "மொத்த ஊதியம் / Gross Pay",
     deductions: "பிடித்தங்கள்",
     netPay: "நிகர ஊதியம்",
     note: "குறிப்பு / Note",
-
+    
     // AI Assistant
-    askPayrollAI: "பேரொல் AIயிடம் கேளுங்கள்",
+    askPayrollAI: "ஊதிய AIயிடம் கேளுங்கள்",
     aiGreeting: "வணக்கம்! நான் உங்கள் தமிழ்நாடு அரசு ஊதிய AI உதவியாளர். இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?",
-    inputPlaceholder: "உதா: ஜனவரி 2024க்கான அகவிலைப்படி என்ன?",
+    inputPlaceholder: "உதா: ஜனவரி 2024க்கான DA என்ன?",
     aiDisclaimer: "நான் ஒரு AI உதவியாளர். முக்கியமான தகவல்களை அதிகாரப்பூர்வ ஆதாரங்களுடன் சரிபார்க்கவும்.",
-    amountInWords: "Not implemented",
+    amountInWords: "செயல்படுத்தப்படவில்லை",
   }
 };
-
-export type TranslationKey = keyof typeof translations.en;

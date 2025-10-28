@@ -26,6 +26,12 @@ export interface AnnualIncrementChange {
   incrementMonth: 'jan' | 'apr' | 'jul' | 'oct';
 }
 
+export interface AccountTestPass {
+  id: string;
+  passDate: string;
+  description: string;
+}
+
 export interface BreakInService {
   id: string;
   startDate: string;
@@ -52,6 +58,10 @@ export interface EmployeeInput {
   // Pay at time of joining
   joiningPostId?: string;
   joiningPostCustomName?: string;
+  joiningBasicPay3rdPC?: number;
+  joiningScaleId3rdPC?: string;
+  joiningBasicPay4thPC?: number;
+  joiningScaleId4thPC?: string;
   joiningBasicPay5thPC?: number; // For pre-2006 joiners
   joiningScaleId5thPC?: string; // For pre-2006 joiners
   joiningPayInPayBand?: number; // For 6th PC joiners
@@ -62,11 +72,10 @@ export interface EmployeeInput {
   selectionGradeTwoIncrements: boolean;
   specialGradeDate: string;
   specialGradeTwoIncrements: boolean;
-  superGradeDate: string;
-  stagnationIncrementDate?: string;
-
+  
   promotions: Promotion[];
   breaksInService: BreakInService[];
+  accountTestPasses: AccountTestPass[];
   incrementEligibilityMonths: number;
 
   cityClass: CityClass;
@@ -87,6 +96,16 @@ export interface EmployeeInput {
   cpsGpfContributionRate: number;
   professionalTax: number;
   gisContribution: number;
+  
+  // New Probation Fields
+  probationPeriodType: '1 Year' | '2 Years' | 'Custom';
+  probationPeriodMonths?: number;
+  probationStartDate: string;
+  hasTestRequirement: boolean;
+  testType?: 'Departmental Test - Part I' | 'Departmental Test - Part II' | 'Tamil Language Test (2nd Class)' | 'Account Test for Subordinates' | 'Professional Qualification' | 'Other';
+  testName?: string;
+  testStatus?: 'Not Appeared' | 'Pending' | 'Passed' | 'Failed' | 'Exempted';
+  testPassedDate?: string;
 }
 
 export interface PayScale {
@@ -95,6 +114,17 @@ export interface PayScale {
   payBand: string;
   gradePay: number;
 }
+
+export interface PayScale3rdPC {
+  id: string;
+  scale: string;
+}
+
+export interface PayScale4thPC {
+  id: string;
+  scale: string;
+}
+
 
 export interface PayScale5thPC {
   id: string;
@@ -126,7 +156,7 @@ export interface PayrollPeriod {
   totalDeductions: number;
   netPay: number;
   remarks: string[];
-  commission: 5 | 6 | 7;
+  commission: 3 | 4 | 5 | 6 | 7;
   payInPayBand?: number; // Optional for 6th PC
   gradePay?: number; // Optional for 6th PC
 }
@@ -154,19 +184,38 @@ export interface EmployeeDetails {
     payRevisions: { description: string; date: string }[];
     selectionGradeDate?: string;
     specialGradeDate?: string;
-    superGradeDate?: string;
-    stagnationIncrementDates?: string[];
+    accountTestPasses?: { passDate: string; description: string }[];
+
     // For Last Pay Certificate (LPC)
     festivalAdvance?: number;
     carAdvance?: number;
     twoWheelerAdvance?: number;
     computerAdvance?: number;
     otherPayables?: number;
+
+    // Probation details for display
+    probationPeriod?: string;
+    probationEndsOn?: string;
+    hasTestRequirement?: boolean;
+    testDetails?: string;
 }
 
 
 export interface PayrollResult {
   employeeDetails: EmployeeDetails;
+  fixation4thPC?: {
+    basicPay1986: number;
+    daPortion: number;
+    totalPay: number;
+    initialRevisedPay: number;
+  };
+  fixation5thPC?: {
+    basicPay1995: number;
+    daPortion: number;
+    totalPay: number;
+    interimRelief: number;
+    initialRevisedPay: number;
+  };
   fixation6thPC?: {
     basicPay2005: number;
     multipliedPay: number;
@@ -182,4 +231,12 @@ export interface PayrollResult {
   };
   yearlyCalculations: PayrollYear[];
   appliedRevisions: { description: string, date: Date }[];
+  incrementAnalysis: {
+    regular: number;
+    selectionGrade: number;
+    specialGrade: number;
+    promotion: number;
+    accountTest: number;
+    total: number;
+  };
 }

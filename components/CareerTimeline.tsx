@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { PayrollResult as PayrollResultType } from '../types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/Card';
@@ -11,10 +12,10 @@ interface CareerTimelineProps {
 
 export const CareerTimeline: React.FC<CareerTimelineProps> = ({ result }) => {
     const { employeeDetails, appliedRevisions } = result;
-    const { dateOfJoining, promotions, retirementDate, selectionGradeDate, specialGradeDate, superGradeDate, retirementAge, stagnationIncrementDates, dateOfRelief } = employeeDetails;
+    const { dateOfJoining, promotions, retirementDate, selectionGradeDate, specialGradeDate, retirementAge, dateOfRelief, accountTestPasses } = employeeDetails;
     const { t } = useLanguage();
 
-    const events: { dateStr: string; date: Date; title: string; description: string; type: 'joining' | 'promotion' | 'grade' | 'retirement' | 'stagnation' | 'transfer' | 'revision' }[] = [];
+    const events: { dateStr: string; date: Date; title: string; description: string; type: 'joining' | 'promotion' | 'grade' | 'retirement' | 'stagnation' | 'transfer' | 'revision' | 'test_pass' }[] = [];
 
     if (dateOfJoining && dateOfJoining !== 'N/A') {
         events.push({
@@ -47,6 +48,18 @@ export const CareerTimeline: React.FC<CareerTimelineProps> = ({ result }) => {
             });
         }
     });
+
+    if (accountTestPasses) {
+        accountTestPasses.forEach(at => {
+            events.push({
+                dateStr: at.passDate,
+                date: new Date(at.passDate.split('/').reverse().join('-')),
+                title: 'Account Test Passed',
+                description: at.description,
+                type: 'test_pass',
+            });
+        });
+    }
     
     if (appliedRevisions) {
         appliedRevisions.forEach(rev => {
@@ -77,28 +90,6 @@ export const CareerTimeline: React.FC<CareerTimelineProps> = ({ result }) => {
             title: 'Special Grade Awarded',
             description: 'Completed 20 years of service.',
             type: 'grade',
-        });
-    }
-
-     if (superGradeDate) {
-         events.push({
-            dateStr: superGradeDate,
-            date: new Date(superGradeDate.split('/').reverse().join('-')),
-            title: 'Super Grade (Bonus) Awarded',
-            description: 'Completed 30 years of service.',
-            type: 'grade',
-        });
-    }
-
-    if (stagnationIncrementDates) {
-        stagnationIncrementDates.forEach(d => {
-            events.push({
-                dateStr: d,
-                date: new Date(d.split('/').reverse().join('-')),
-                title: 'Stagnation Increment',
-                description: 'Awarded after 10 years in the same post.',
-                type: 'stagnation',
-            });
         });
     }
 

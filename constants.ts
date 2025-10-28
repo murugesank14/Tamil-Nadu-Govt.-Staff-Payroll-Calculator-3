@@ -1,4 +1,47 @@
-import { CityGrade, CityClass, PayScale, Post, PayRevision2010, PayScale5thPC } from './types';
+import { CityGrade, CityClass, PayScale, Post, PayRevision2010, PayScale5thPC, PayScale4thPC, PayScale3rdPC } from './types';
+
+export const TN_GOVERNMENT_ORDERS = {
+    // Fix: Added FOURTH_PC object to resolve property access error in payrollService.
+    FOURTH_PC: {
+        IMPLEMENTATION: 'G.O.Ms.No.555, Finance (Pay Cell) Dept, dated 10.06.1985',
+    },
+    FIFTH_PC: {
+        IMPLEMENTATION: 'G.O.Ms.No.162, Finance (Pay Cell) Dept, dated 13.04.1998',
+        SELECTION_SPECIAL_GRADE: 'G.O.(Ms) No.162, Finance (Pay Cell) Department, dated 13-04-1998, Schedule-II'
+    },
+    SIXTH_PC: {
+        IMPLEMENTATION: 'G.O.Ms.No.234, Finance (Pay Cell) Dept, dated 01.06.2009',
+        SELECTION_SPECIAL_GRADE: 'G.O.Ms.No.237, Finance (Pay Cell) Dept, dated 22.07.2013'
+    },
+    SEVENTH_PC: {
+        IMPLEMENTATION: 'G.O.Ms.No.303, Finance (Pay Cell) Dept, dated 11.10.2017',
+        SELECTION_SPECIAL_GRADE: 'G.O.Ms.No.303/2017, Para 15'
+    },
+    PROBATION: {
+        INCREMENT_RULES: 'G.O.Ms.No.35998/D.O-I-FRI/93-3, PAR Dept',
+        GENERAL_RULE: 'Rule 28 of General Rules',
+        CONDITIONS_OF_SERVICE: 'Section 31(4), TN Govt Servants Act 2016'
+    },
+    STAGNATION: {
+        RULE: 'Fundamental Rule 26 - Stagnation Increments'
+    }
+};
+
+export const PAY_BAND_LIMITS_6TH_PC: { [gradePay: number]: { min: number, max: number } } = {
+    1300: { min: 4800, max: 10000 }, 1400: { min: 4800, max: 10000 }, 1650: { min: 4800, max: 10000 },
+    1800: { min: 5200, max: 20200 }, 1900: { min: 5200, max: 20200 }, 2000: { min: 5200, max: 20200 },
+    2200: { min: 5200, max: 20200 }, 2400: { min: 5200, max: 20200 }, 2600: { min: 5200, max: 20200 }, 
+    2800: { min: 5200, max: 20200 },
+    4200: { min: 9300, max: 34800 }, 4300: { min: 9300, max: 34800 }, 4400: { min: 9300, max: 34800 },
+    4450: { min: 9300, max: 34800 }, 4500: { min: 9300, max: 34800 }, 4600: { min: 9300, max: 34800 },
+    4700: { min: 9300, max: 34800 }, 4800: { min: 9300, max: 34800 }, 4900: { min: 9300, max: 34800 },
+    5100: { min: 9300, max: 34800 },
+    5400: { min: 15600, max: 39100 }, 5700: { min: 15600, max: 39100 }, 6000: { min: 15600, max: 39100 },
+    6600: { min: 15600, max: 39100 }, 7600: { min: 15600, max: 39100 }, 7700: { min: 15600, max: 39100 },
+    8700: { min: 37400, max: 67000 }, 8800: { min: 37400, max: 67000 }, 8900: { min: 37400, max: 67000 },
+    10000: { min: 37400, max: 67000 },
+};
+
 
 // Sorted by Level for easier dropdown navigation
 export const POSTS: Post[] = [
@@ -136,6 +179,26 @@ export const PAY_SCALES_6TH_PC: PayScale[] = [
   { id: 'PB4-10000', scale: '17400-500-21900', payBand: 'PB-4 (37400-67000)', gradePay: 10000 },
 ];
 
+// Fix: Added missing PAY_SCALES_4TH_PC export to resolve import errors.
+export const PAY_SCALES_4TH_PC: PayScale4thPC[] = [
+    { id: '4th_750_900', scale: '750-12-870-15-900' },
+    { id: '4th_800_1150', scale: '800-15-950-20-1150' },
+    { id: '4th_950_1500', scale: '950-20-1150-25-1500' },
+    { id: '4th_1200_2040', scale: '1200-30-1560-40-2040' },
+    { id: '4th_1350_2200', scale: '1350-30-1440-40-1800-50-2200' },
+    { id: '4th_1640_2900', scale: '1640-60-2600-75-2900' },
+];
+
+// Fix: Added missing PAY_SCALES_3RD_PC export to resolve import errors.
+export const PAY_SCALES_3RD_PC: PayScale3rdPC[] = [
+    { id: '3rd_190_300', scale: '190-5-240-6-300' },
+    { id: '3rd_200_350', scale: '200-5-250-6-280-7-350' },
+    { id: '3rd_250_500', scale: '250-10-350-15-500' },
+    { id: '3rd_400_700', scale: '400-15-460-20-600-25-700' },
+    { id: '3rd_450_800', scale: '450-20-650-25-800' },
+    { id: '3rd_600_900', scale: '600-25-750-30-900' },
+];
+
 export const PAY_SCALES_5TH_PC: PayScale5thPC[] = PAY_SCALES_6TH_PC.map(p => ({
     id: p.id,
     scale: p.scale,
@@ -263,6 +326,20 @@ export const HRA_SLABS_5TH_PC: HraSlab6thPC[] = [
     { payRange: [0, 4000], rates: { 'Grade I(a)': 400, 'Grade I(b)': 350, 'Grade II': 200, 'Grade III': 150, 'Unclassified': 100 } },
     { payRange: [4001, 8000], rates: { 'Grade I(a)': 600, 'Grade I(b)': 500, 'Grade II': 350, 'Grade III': 250, 'Unclassified': 150 } },
     { payRange: [8001, 999999], rates: { 'Grade I(a)': 800, 'Grade I(b)': 700, 'Grade II': 500, 'Grade III': 300, 'Unclassified': 200 } },
+];
+
+// Fix: Added missing HRA_SLABS_4TH_PC export to resolve import errors.
+export const HRA_SLABS_4TH_PC: HraSlab6thPC[] = [
+    { payRange: [0, 1500], rates: { 'Grade I(a)': 200, 'Grade I(b)': 150, 'Grade II': 100, 'Grade III': 75, 'Unclassified': 50 } },
+    { payRange: [1501, 3000], rates: { 'Grade I(a)': 300, 'Grade I(b)': 250, 'Grade II': 150, 'Grade III': 100, 'Unclassified': 75 } },
+    { payRange: [3001, 999999], rates: { 'Grade I(a)': 400, 'Grade I(b)': 350, 'Grade II': 200, 'Grade III': 150, 'Unclassified': 100 } },
+];
+
+// Fix: Added missing HRA_SLABS_3RD_PC export to resolve import errors.
+export const HRA_SLABS_3RD_PC: HraSlab6thPC[] = [
+    { payRange: [0, 750], rates: { 'Grade I(a)': 100, 'Grade I(b)': 75, 'Grade II': 50, 'Grade III': 40, 'Unclassified': 30 } },
+    { payRange: [751, 1500], rates: { 'Grade I(a)': 150, 'Grade I(b)': 125, 'Grade II': 75, 'Grade III': 50, 'Unclassified': 40 } },
+    { payRange: [1501, 999999], rates: { 'Grade I(a)': 200, 'Grade I(b)': 175, 'Grade II': 100, 'Grade III': 75, 'Unclassified': 50 } },
 ];
 
 

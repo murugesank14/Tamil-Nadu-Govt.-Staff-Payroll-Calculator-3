@@ -1,7 +1,8 @@
 
+
 import React, { useState, useEffect } from 'react';
-import { EmployeeInput, CityClass, Promotion, AnnualIncrementChange, BreakInService } from '../types';
-import { PAY_SCALES_6TH_PC, LEVELS, GRADE_PAY_OPTIONS, POSTS, PAY_SCALES_5TH_PC } from '../constants';
+import { EmployeeInput, CityClass, Promotion, AnnualIncrementChange, BreakInService, AccountTestPass } from '../types';
+import { PAY_SCALES_6TH_PC, LEVELS, GRADE_PAY_OPTIONS, POSTS, PAY_SCALES_5TH_PC, PAY_SCALES_4TH_PC, PAY_SCALES_3RD_PC } from '../constants';
 import { Input } from './ui/Input';
 import { Button } from './ui/Button';
 import { Select } from './ui/Select';
@@ -16,7 +17,7 @@ interface PayrollFormProps {
   isLoading: boolean;
 }
 
-const initialFormData: Omit<EmployeeInput, 'promotions' | 'annualIncrementChanges' | 'breaksInService'> = {
+const initialFormData: Omit<EmployeeInput, 'promotions' | 'annualIncrementChanges' | 'breaksInService' | 'accountTestPasses'> = {
     employeeName: '',
     fatherName: '',
     employeeNo: '',
@@ -31,6 +32,11 @@ const initialFormData: Omit<EmployeeInput, 'promotions' | 'annualIncrementChange
     
     joiningPostId: 'custom',
     joiningPostCustomName: '',
+
+    joiningBasicPay3rdPC: undefined,
+    joiningScaleId3rdPC: PAY_SCALES_3RD_PC[5].id,
+    joiningBasicPay4thPC: undefined,
+    joiningScaleId4thPC: PAY_SCALES_4TH_PC[5].id,
     joiningBasicPay5thPC: undefined,
     joiningScaleId5thPC: PAY_SCALES_5TH_PC[10].id,
     joiningPayInPayBand: undefined,
@@ -41,14 +47,12 @@ const initialFormData: Omit<EmployeeInput, 'promotions' | 'annualIncrementChange
     selectionGradeTwoIncrements: true,
     specialGradeDate: '',
     specialGradeTwoIncrements: true,
-    superGradeDate: '',
-    stagnationIncrementDate: '',
     daOverride: undefined,
     
     incrementEligibilityMonths: 6,
 
     cityClass: 'C',
-    calculationStartDate: '1998-01-01',
+    calculationStartDate: '1980-01-01',
     calculationEndDate: new Date().toISOString().split('T')[0],
     
     festivalAdvance: undefined,
@@ -61,6 +65,16 @@ const initialFormData: Omit<EmployeeInput, 'promotions' | 'annualIncrementChange
     cpsGpfContributionRate: 10,
     professionalTax: 200,
     gisContribution: 60,
+
+    // Probation
+    probationPeriodType: '2 Years',
+    probationPeriodMonths: undefined,
+    probationStartDate: '',
+    hasTestRequirement: false,
+    testType: 'Departmental Test - Part I',
+    testName: '',
+    testStatus: 'Not Appeared',
+    testPassedDate: '',
 };
 
 const PayrollForm: React.FC<PayrollFormProps> = ({ onCalculate, isLoading }) => {
@@ -70,6 +84,7 @@ const PayrollForm: React.FC<PayrollFormProps> = ({ onCalculate, isLoading }) => 
       { id: Date.now().toString(), effectiveDate: '', incrementMonth: 'jul' }
   ]);
   const [breaksInService, setBreaksInService] = useState<BreakInService[]>([]);
+  const [accountTestPasses, setAccountTestPasses] = useState<AccountTestPass[]>([]);
   const [duplicatePromotionError, setDuplicatePromotionError] = useState<{[key: string]: string | null}>({});
   const { t } = useLanguage();
   
@@ -92,14 +107,16 @@ const PayrollForm: React.FC<PayrollFormProps> = ({ onCalculate, isLoading }) => 
         }
         return newChanges;
     });
+    setFormData(prev => ({ ...prev, probationStartDate: prev.dateOfJoining, calculationStartDate: prev.dateOfJoining }));
 }, [formData.dateOfJoining]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const numberInputs = [
-        'joiningBasicPay5thPC', 'joiningPayInPayBand', 'festivalAdvance', 'carAdvance', 
+        'joiningBasicPay3rdPC', 'joiningBasicPay4thPC', 'joiningBasicPay5thPC', 'joiningPayInPayBand', 'festivalAdvance', 'carAdvance', 
         'twoWheelerAdvance', 'computerAdvance', 'otherPayables', 'incrementEligibilityMonths',
-        'medicalAllowance', 'cpsGpfContributionRate', 'professionalTax', 'gisContribution', 'daOverride'
+        'medicalAllowance', 'cpsGpfContributionRate', 'professionalTax', 'gisContribution', 'daOverride',
+        'probationPeriodMonths'
     ];
     const isNumberInput = numberInputs.includes(name);
     
@@ -182,6 +199,18 @@ const PayrollForm: React.FC<PayrollFormProps> = ({ onCalculate, isLoading }) => 
     setBreaksInService(prev => prev.map(b => (b.id === id ? { ...b, [field]: value } : b)));
   };
 
+  const addAccountTestPass = () => {
+    setAccountTestPasses(prev => [...prev, { id: Date.now().toString(), passDate: '', description: 'Account Test for Subordinate Officers Part-I' }]);
+  };
+
+  const removeAccountTestPass = (id: string) => {
+    setAccountTestPasses(prev => prev.filter(at => at.id !== id));
+  };
+
+  const handleAccountTestPassChange = (id: string, field: keyof AccountTestPass, value: string) => {
+    setAccountTestPasses(prev => prev.map(at => (at.id === id ? { ...at, [field]: value } : at)));
+  };
+
   const getRetirementDate = () => {
     if (!formData.dateOfBirth) return 'N/A';
     try {
@@ -200,18 +229,23 @@ const PayrollForm: React.FC<PayrollFormProps> = ({ onCalculate, isLoading }) => 
       setFormData(initialFormData);
       setPromotions([]);
       setBreaksInService([]);
+      setAccountTestPasses([]);
       setAnnualIncrementChanges([{ id: Date.now().toString(), effectiveDate: '', incrementMonth: 'jul' }]);
       setDuplicatePromotionError({});
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onCalculate({ ...formData, promotions, annualIncrementChanges, breaksInService });
+    if(formData.hasTestRequirement && formData.testStatus === 'Passed' && !formData.testPassedDate) {
+        alert("Please enter the date the test was passed.");
+        return;
+    }
+    onCalculate({ ...formData, promotions, annualIncrementChanges, breaksInService, accountTestPasses });
   };
   
   const joiningDate = formData.dateOfJoining ? new Date(formData.dateOfJoining) : null;
   const joiningPeriod = joiningDate 
-      ? (joiningDate < new Date('2006-01-01') ? 'pre2006' : (joiningDate < new Date('2016-01-01') ? '6thPC' : '7thPC')) 
+      ? (joiningDate < new Date('1986-01-01') ? 'pre1986' : (joiningDate < new Date('1996-01-01') ? '4thPC' : (joiningDate < new Date('2006-01-01') ? '5thPC' : (joiningDate < new Date('2016-01-01') ? '6thPC' : '7thPC'))))
       : null;
   
   const hasDuplicateErrors = Object.values(duplicatePromotionError).some(error => error !== null);
@@ -305,7 +339,9 @@ const PayrollForm: React.FC<PayrollFormProps> = ({ onCalculate, isLoading }) => 
       <Card>
         <CardHeader>
           <CardTitle>{t('payAtJoining')}</CardTitle>
-          {joiningPeriod === 'pre2006' && <CardDescription>{t('payAtJoiningDescPre2006')}</CardDescription>}
+          {joiningPeriod === 'pre1986' && <CardDescription>{t('payAtJoiningDesc3rdPC')}</CardDescription>}
+          {joiningPeriod === '4thPC' && <CardDescription>{t('payAtJoiningDesc4thPC')}</CardDescription>}
+          {joiningPeriod === '5thPC' && <CardDescription>{t('payAtJoiningDesc5thPC')}</CardDescription>}
           {joiningPeriod === '6thPC' && <CardDescription>{t('payAtJoiningDesc6thPC')}</CardDescription>}
           {joiningPeriod === '7thPC' && <CardDescription>{t('payAtJoiningDesc7thPC')}</CardDescription>}
         </CardHeader>
@@ -323,7 +359,35 @@ const PayrollForm: React.FC<PayrollFormProps> = ({ onCalculate, isLoading }) => 
                   <Input type="text" name="joiningPostCustomName" id="joiningPostCustomName" value={formData.joiningPostCustomName ?? ''} onChange={handleChange} required />
               </div>
             )}
-           {joiningPeriod === 'pre2006' && (
+            {joiningPeriod === 'pre1986' && (
+              <>
+                  <div>
+                      <Label htmlFor="joiningScaleId3rdPC">{t('payScale3rdPC')}</Label>
+                      <Select name="joiningScaleId3rdPC" id="joiningScaleId3rdPC" value={formData.joiningScaleId3rdPC} onChange={handleChange} required >
+                        {PAY_SCALES_3RD_PC.map(ps => (<option key={ps.id} value={ps.id}>{ps.scale}</option>))}
+                      </Select>
+                  </div>
+                  <div>
+                      <Label htmlFor="joiningBasicPay3rdPC">{t('basicPayAtJoining')}</Label>
+                      <Input type="number" name="joiningBasicPay3rdPC" id="joiningBasicPay3rdPC" value={formData.joiningBasicPay3rdPC ?? ''} onChange={handleChange} required />
+                  </div>
+              </>
+           )}
+           {joiningPeriod === '4thPC' && (
+              <>
+                  <div>
+                      <Label htmlFor="joiningScaleId4thPC">{t('payScale4thPC')}</Label>
+                      <Select name="joiningScaleId4thPC" id="joiningScaleId4thPC" value={formData.joiningScaleId4thPC} onChange={handleChange} required >
+                        {PAY_SCALES_4TH_PC.map(ps => (<option key={ps.id} value={ps.id}>{ps.scale}</option>))}
+                      </Select>
+                  </div>
+                  <div>
+                      <Label htmlFor="joiningBasicPay4thPC">{t('basicPayAtJoining')}</Label>
+                      <Input type="number" name="joiningBasicPay4thPC" id="joiningBasicPay4thPC" value={formData.joiningBasicPay4thPC ?? ''} onChange={handleChange} required />
+                  </div>
+              </>
+           )}
+           {joiningPeriod === '5thPC' && (
               <>
                   <div>
                       <Label htmlFor="joiningScaleId5thPC">{t('payScale5thPC')}</Label>
@@ -382,15 +446,6 @@ const PayrollForm: React.FC<PayrollFormProps> = ({ onCalculate, isLoading }) => 
                   {formData.specialGradeDate && <div className="mt-2 text-xs" title={t('applyFixationBenefitTooltip')}><label className="flex items-center"><input type="checkbox" name="specialGradeTwoIncrements" checked={formData.specialGradeTwoIncrements} onChange={handleChange} className="mr-2"/> {t('applyFixationBenefit')}</label></div>}
                 </div>
                  <div>
-                  <Label htmlFor="superGradeDate">{t('superGradeDate')}</Label>
-                  <Input type="date" name="superGradeDate" id="superGradeDate" value={formData.superGradeDate} onChange={handleChange} />
-                </div>
-                 <div>
-                  <Label htmlFor="stagnationIncrementDate">{t('stagnationIncrementDate')}</Label>
-                  <Input type="date" name="stagnationIncrementDate" id="stagnationIncrementDate" value={formData.stagnationIncrementDate ?? ''} onChange={handleChange} />
-                  <p className="text-xs text-gray-500 mt-1">{t('stagnationHelpText')}</p>
-                </div>
-                 <div>
                   <Label htmlFor="dateOfRelief">{t('dateOfRelief')}</Label>
                   <Input type="date" name="dateOfRelief" id="dateOfRelief" value={formData.dateOfRelief ?? ''} onChange={handleChange} />
                   <p className="text-xs text-gray-500 mt-1">{t('reliefHelpText')}</p>
@@ -415,6 +470,89 @@ const PayrollForm: React.FC<PayrollFormProps> = ({ onCalculate, isLoading }) => 
                  </div>
               </div>
           </CardContent>
+      </Card>
+      
+      <Card>
+        <CardHeader>
+            <CardTitle>{t('probationDetails')}</CardTitle>
+            <CardDescription>{t('probationDetailsDesc')}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+            <div>
+                <Label>{t('probationPeriod')}</Label>
+                <div className="mt-2 flex items-center space-x-6">
+                    <label className="flex items-center">
+                        <input type="radio" name="probationPeriodType" value="1 Year" checked={formData.probationPeriodType === '1 Year'} onChange={handleChange as any} className="form-radio" />
+                        <span className="ml-2">{t('probation1Year')}</span>
+                    </label>
+                    <label className="flex items-center">
+                        <input type="radio" name="probationPeriodType" value="2 Years" checked={formData.probationPeriodType === '2 Years'} onChange={handleChange as any} className="form-radio" />
+                        <span className="ml-2">{t('probation2Years')}</span>
+                    </label>
+                    <label className="flex items-center">
+                        <input type="radio" name="probationPeriodType" value="Custom" checked={formData.probationPeriodType === 'Custom'} onChange={handleChange as any} className="form-radio" />
+                        <span className="ml-2">{t('probationCustom')}</span>
+                    </label>
+                </div>
+            </div>
+
+            {formData.probationPeriodType === 'Custom' && (
+                <div>
+                    <Label htmlFor="probationPeriodMonths">{t('probationPeriodMonths')}</Label>
+                    <Input type="number" name="probationPeriodMonths" id="probationPeriodMonths" value={formData.probationPeriodMonths ?? ''} onChange={handleChange} placeholder="e.g., 18" required />
+                </div>
+            )}
+            
+            <div>
+                <Label htmlFor="probationStartDate">{t('probationStartDate')}</Label>
+                <Input type="date" name="probationStartDate" id="probationStartDate" value={formData.probationStartDate} onChange={handleChange} required />
+            </div>
+
+            <div className="pt-4 border-t border-gray-200">
+                 <label className="flex items-center font-medium text-gray-700">
+                    <input type="checkbox" name="hasTestRequirement" checked={formData.hasTestRequirement} onChange={handleChange} className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 mr-3" />
+                    {t('requiresTest')}
+                </label>
+            </div>
+            
+             {formData.hasTestRequirement && (
+                <div className="space-y-4 pl-6 border-l-2 border-emerald-200 ml-2 pt-2">
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <Label htmlFor="testType">{t('testType')}</Label>
+                            <Select name="testType" id="testType" value={formData.testType} onChange={handleChange}>
+                                <option>Departmental Test - Part I</option>
+                                <option>Departmental Test - Part II</option>
+                                <option>Tamil Language Test (2nd Class)</option>
+                                <option>Account Test for Subordinates</option>
+                                <option>Professional Qualification</option>
+                                <option>Other</option>
+                            </Select>
+                        </div>
+                         <div>
+                            <Label htmlFor="testName">{t('testName')}</Label>
+                            <Input type="text" name="testName" id="testName" value={formData.testName ?? ''} onChange={handleChange} placeholder={t('testNamePlaceholder')} />
+                        </div>
+                     </div>
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <Label htmlFor="testStatus">{t('testStatus')}</Label>
+                            <Select name="testStatus" id="testStatus" value={formData.testStatus} onChange={handleChange}>
+                                <option>Not Appeared</option>
+                                <option>Pending</option>
+                                <option>Passed</option>
+                                <option>Failed</option>
+                                <option>Exempted</option>
+                            </Select>
+                        </div>
+                         <div>
+                            <Label htmlFor="testPassedDate">{t('testPassedDate')}</Label>
+                            <Input type="date" name="testPassedDate" id="testPassedDate" value={formData.testPassedDate ?? ''} onChange={handleChange} disabled={formData.testStatus !== 'Passed'} />
+                        </div>
+                     </div>
+                </div>
+            )}
+        </CardContent>
       </Card>
 
       <Card>
@@ -528,6 +666,31 @@ const PayrollForm: React.FC<PayrollFormProps> = ({ onCalculate, isLoading }) => 
                   </div>
               ))}
           </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex justify-between items-center">
+            <CardTitle>{t('accountTestPass')}</CardTitle>
+            <Button type="button" onClick={addAccountTestPass} variant="ghost" size="sm">{t('add')}</Button>
+        </CardHeader>
+        <CardContent className="space-y-3">
+            {accountTestPasses.length === 0 && <p className="text-sm text-gray-500 text-center py-4">{t('accountTestPassDesc')}</p>}
+            {accountTestPasses.map((at) => (
+                <div key={at.id} className="p-3 border rounded-md bg-gray-50/80">
+                    <div className="flex items-end gap-4">
+                        <div className="flex-1">
+                            <Label htmlFor={`at_date_${at.id}`}>{t('passDate')}</Label>
+                            <Input type="date" id={`at_date_${at.id}`} value={at.passDate} onChange={e => handleAccountTestPassChange(at.id, 'passDate', e.target.value)} required />
+                        </div>
+                        <div className="flex-1">
+                            <Label htmlFor={`at_desc_${at.id}`}>{t('testDescription')}</Label>
+                            <Input type="text" id={`at_desc_${at.id}`} value={at.description} onChange={e => handleAccountTestPassChange(at.id, 'description', e.target.value)} required />
+                        </div>
+                        <Button type="button" onClick={() => removeAccountTestPass(at.id)} variant="destructive" size="icon"><TrashIcon /></Button>
+                    </div>
+                </div>
+            ))}
+        </CardContent>
       </Card>
       
       <Card>

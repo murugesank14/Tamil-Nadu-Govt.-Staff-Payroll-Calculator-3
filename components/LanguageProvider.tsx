@@ -1,7 +1,13 @@
 import React, { createContext, useState, useContext } from 'react';
-import { translations, TranslationKey } from '../translations';
+// Fix: Remove `TranslationKey` from this import as it's not exported.
+// We will define it locally based on the imported `translations` object.
+import { translations } from '../translations';
 
 type Language = 'en' | 'ta';
+// Fix: Define the TranslationKey type locally from the imported translations object.
+// This ensures that only valid keys from the English translation file can be used.
+type TranslationKey = keyof typeof translations['en'];
+
 
 interface LanguageContextType {
   language: Language;
